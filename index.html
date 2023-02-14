@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script>
+        const apiUrl = 'http://localhost:5000/culture-generator/api/predict';
+        async function fetchResponse(tempLevel, tempVar, precipitation, civLevel) {
+            try {
+                const response = await fetch(`${apiUrl}?TemperatureLevel=${tempLevel}&TemperatureVariance=${tempVar}&PrecipitationLevel=${precipitation}&CivilizationLevel=${civLevel}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error: ${response.status}`);
+                }
+                return await response.json();
+            } catch (e) {
+                console.log('fetch response failed with:', e);
+            }
+        }
+
+        function getCulture() {
+            let tempLevel = document.getElementById("tempLevel").value;
+            let tempVar = document.getElementById("tempVar").value;
+            let precipitation = document.getElementById("precipitation").value;
+            let civLevel = document.getElementById("civLevel").value;
+            fetchResponse(tempLevel, tempVar, precipitation, civLevel).then((response) => {
+                document.querySelectorAll('.card-columns').forEach(e => e.remove());
+                document.querySelectorAll('.card').forEach(e => e.remove());
+                categories = new Set(response.predictions.map(prediction => prediction.variable_category));
+                for (var category of categories) {
+                    let header = document.createElement("div");
+                    header.className = "card text-center bg-dark text-white"
+                    header.style = "margin-left: 5%; margin-right: 5%; margin-top: 2%;";
+                    header.innerHTML = `
+                        <div class="card-body">
+                            <h5 class="card-title">${category}</h5>
+                        </div>
+                    `
+                    document.body.appendChild(header);
+                    let cards = document.createElement("div");
+                    cards.className = "card-columns";
+                    cards.id = `cards-${category}`;
+                    cards.style = "margin-left: 5%; margin-right: 5%; margin-top: 2%;";
+                    document.body.appendChild(cards);
+                    elems = response.predictions.filter(prediction => prediction.variable_category == category);
+                    for (var elem of elems) {
+                        cards.innerHTML += `\n
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">${elem.variable_title}</h5>
+                                <p class="card-text">${elem.variable_definition}</p>
+                                <hr>
+                                <p class="card-text"><b>${elem.code_name}</b></p>
+                                <p class="card-text"><i>${elem.code_description}</i></p>
+                                <p class="card-text"><small class="text-muted">${elem.variable_category}</small></p>
+                            </div>
+                        </div >`;
+                    }
+                }
+            }).catch((e) => {
+                console.log(e);
+            });
+        } 
+    </script>
+</head>
+
+<body>
+    <div class="jumbotron jumbotron-fluid mb-0">
+        <div class="container">
+            <h1 class="display-4">Culture Generator</h1>
+            <p class="lead">Built using maching learning based on the data provided by D-PLACE - the Database of Places,
+                Language, Culture and Environment Latest</p>
+            <hr class="my-4">
+            <p>The generator model requires some basic input regarding the climate and the overall civilization level of
+                the culture.</p>
+            <label class="form-label" for="tempLevel">Temperature Level</label>
+            <input type="range" min="0" max="9" step="1" class="form-range" id="tempLevel" />
+            <label class="form-label" for="tempVar">Temperature Variance</label>
+            <input type="range" min="0" max="9" step="1" class="form-range" id="tempVar" />
+            <label class="form-label" for="precipitation">Precipitation Level (e.g. rainfall)</label>
+            <input type="range" min="0" max="9" step="1" class="form-range" id="precipitation" />
+            <label class="form-label" for="civLevel">Civilization Level</label>
+            <input type="range" min="1" max="5" step="1" class="form-range" id="civLevel" />
+            <button type="button" id="btnGetTxt" onclick="getCulture()" class="btn btn-dark">Generate</button>
+        </div>
+    </div>
+
+</body>
+
+</html>
