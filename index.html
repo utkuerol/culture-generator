@@ -12,7 +12,13 @@
         const apiUrl = 'http://ec2-54-162-16-78.compute-1.amazonaws.com/culture-generator/api/predict';
         async function fetchResponse(tempLevel, tempVar, precipitation, civLevel) {
             try {
-                const response = await fetch(`${apiUrl}?TemperatureLevel=${tempLevel}&TemperatureVariance=${tempVar}&PrecipitationLevel=${precipitation}&CivilizationLevel=${civLevel}`);
+                let url = `${apiUrl}?TemperatureLevel=${tempLevel}&TemperatureVariance=${tempVar}&PrecipitationLevel=${precipitation}&CivilizationLevel=${civLevel}`;
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
                 if (!response.ok) {
                     throw new Error(`HTTP error: ${response.status}`);
                 }
@@ -73,7 +79,7 @@
         <div class="container">
             <h1 class="display-4">Culture Generator</h1>
             <p class="lead">Built using maching learning based on the data provided by D-PLACE - the Database of Places,
-                Language, Culture and Environment Latest</p>
+                Language, Culture and Environment</p>
             <hr class="my-4">
             <p>The generator model requires some basic input regarding the climate and the overall civilization level of
                 the culture.</p>

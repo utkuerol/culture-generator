@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 import model
 
@@ -28,8 +28,9 @@ def get_tasks():
 
     model.train()
     result = model.predict(input)
-    return jsonify({'predictions': result})
+    response = jsonify({'predictions': result})
+    return response
 
 
 if __name__ == '__main__':
-    app.run(port=8080, debug=True)
+    app.run(host="0.0.0.0", port="5000", debug=True)

@@ -46,6 +46,8 @@ def predict(input):
         tmp = list(p[0])
         tmp.sort(reverse=True)
         noise_level = random.randint(0, 2)
+        if preprocess.target_features[i] in preprocess.ecology_related_variables:
+            noise_level = 0
         selection = tmp[noise_level]
         code = model.classes_[i][list(p[0]).index(selection)]
         while code == -1:

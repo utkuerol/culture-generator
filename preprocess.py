@@ -50,6 +50,17 @@ culture_variables = [
     "EA083",
     "EA113",
 ]
+ecology_related_variables = [
+    "EA001",
+    "EA002",
+    "EA003",
+    "EA004",
+    "EA005",
+    "EA006",
+    "EA028",
+    "EA029",
+    "EA042"
+]
 all_features = eco_variables_renamed + culture_variables
 given_features = eco_variables_renamed + ["EA033"]
 target_features = [x for x in all_features if x not in given_features]
