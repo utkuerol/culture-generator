@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
-import model
+import predict
 
 app = Flask(__name__)
 CORS(app)
@@ -26,8 +26,7 @@ def get_tasks():
     if -1 in input:
         return jsonify({"error": "invalid request"})
 
-    model.train()
-    result = model.predict(input)
+    result = predict.predict(input)
     response = jsonify({'predictions': result})
     return response
 
