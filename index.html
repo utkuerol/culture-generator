@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <script>
-        const apiUrl = 'https://ec2-54-162-16-78.compute-1.amazonaws.com/culture-generator/api/predict';
+        const apiUrl = 'http://ec2-54-162-16-78.compute-1.amazonaws.com/culture-generator/api/predict';
         async function fetchResponse(tempLevel, tempVar, precipitation, civLevel) {
             try {
                 const response = await fetch(`${apiUrl}?TemperatureLevel=${tempLevel}&TemperatureVariance=${tempVar}&PrecipitationLevel=${precipitation}&CivilizationLevel=${civLevel}`);
